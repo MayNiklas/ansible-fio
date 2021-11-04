@@ -14,9 +14,9 @@
     state: directory
     mode: '0700'
 
-- name: Create result_location
+- name: Create {{ result_location }}
   ansible.builtin.file:
-    path: "result_location"
+    path: "{{ result_location }}"
     state: directory
     mode: '0700'
 
