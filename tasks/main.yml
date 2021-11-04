@@ -1,2 +1,42 @@
 ---
 # tasks file for ansible-fio
+
+- name: Make sure fio is up-to-date
+  become: yes
+  package:
+    name:
+      - fio
+    state: latest
+
+- name: Create {{ ansible_env.HOME }}/fio
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/fio"
+    state: directory
+    mode: '0700'
+
+- name: Create {{ ansible_env.HOME }}/fio/results
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/fio/results"
+    state: directory
+    mode: '0700'
+
+- name: Create {{ ansible_env.HOME }}/fio/tests
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/fio/tests"
+    state: directory
+    mode: '0700'
+
+- name: Sequential write test for throughput
+  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --filename={{ ansible_env.HOME }}/fio/tests/sequential --output={{ ansible_env.HOME }}/fio/results/sequential_w.txt --bs={{ sequential_bs }} --size={{ sequential_size }} --readwrite=write --ramp_time=4"
+
+- name: Sequential read test for throughput
+  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --filename={{ ansible_env.HOME }}/fio/tests/sequential --output={{ ansible_env.HOME }}/fio/results/sequential_r.txt --bs={{ sequential_bs }} --size={{ sequential_size }} --readwrite=read --ramp_time=4"
+
+- name: Delete test files in {{ ansible_env.HOME }}/fio/tests/
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/fio/tests/"
+    state: "{{ item }}"
+    mode: '0700'
+  with_items:
+    - absent
+    - directory

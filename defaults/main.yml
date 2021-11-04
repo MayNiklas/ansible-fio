@@ -1,2 +1,5 @@
 ---
 # defaults file for ansible-fio
+
+sequential_size: 4G
+sequential_bs: 4M
