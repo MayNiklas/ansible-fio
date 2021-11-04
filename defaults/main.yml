@@ -9,10 +9,7 @@ result_extention: ".json"
 # Multiple formats can be selected, separated by a comma.
 # terse is a CSV based format.
 # json+ is like json, except it adds a full dump of the latency buckets.
-output_format: "json+"
-
-
-
+output_format: "json"
 
 random_size: 4G
 random_bs: 4k
