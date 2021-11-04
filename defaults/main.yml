@@ -1,5 +1,27 @@
 ---
 # defaults file for ansible-fio
 
+tests_location: "{{ ansible_env.HOME }}/fio/tests"
+result_location: "{{ ansible_env.HOME }}/fio/results"
+result_extention: ".txt"
+
+# Set the reporting format to normal, terse, json, or json+.
+# Multiple formats can be selected, separated by a comma.
+# terse is a CSV based format.
+# json+ is like json, except it adds a full dump of the latency buckets.
+output_format: "normal"
+
+
+
+
+random_size: 4G
+random_bs: 4k
+random_ramp_time: 4
+
+mixed_size: 4G
+mixed_bs: 4k
+mixed_ramp_time: 4
+
 sequential_size: 4G
 sequential_bs: 4M
+sequential_ramp_time: 4

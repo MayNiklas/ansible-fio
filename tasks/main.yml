@@ -14,27 +14,36 @@
     state: directory
     mode: '0700'
 
-- name: Create {{ ansible_env.HOME }}/fio/results
+- name: Create result_location
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/fio/results"
+    path: "result_location"
     state: directory
     mode: '0700'
 
-- name: Create {{ ansible_env.HOME }}/fio/tests
+- name: Create {{ tests_location }}
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/fio/tests"
+    path: "{{ tests_location }}"
     state: directory
     mode: '0700'
+
+- name: Random write test for IOP/s
+  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --output-format={{ output_format }} --filename={{ tests_location }}/random --output={{ result_location }}/random_w{{ result_extention }} --bs={{ random_bs }} --size={{ random_size }} --readwrite=write --ramp_time={{ random_ramp_time }}"
+
+- name: Random Read test for IOP/s
+  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --output-format={{ output_format }} --filename={{ tests_location }}/random --output={{ result_location }}/random_r{{ result_extention }} --bs={{ random_bs }} --size={{ random_size }} --readwrite=read --ramp_time={{ random_ramp_time }}"
+
+- name: Mixed Random Workload
+  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --output-format={{ output_format }} --filename={{ tests_location }}/mixed --output={{ result_location }}/mixed{{ result_extention }} --bs={{ mixed_bs }} --size={{ mixed_size }} --readwrite=readwrite --ramp_time={{ mixed_ramp_time }}"
 
 - name: Sequential write test for throughput
-  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --filename={{ ansible_env.HOME }}/fio/tests/sequential --output={{ ansible_env.HOME }}/fio/results/sequential_w.txt --bs={{ sequential_bs }} --size={{ sequential_size }} --readwrite=write --ramp_time=4"
+  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --output-format={{ output_format }} --filename={{ tests_location }}/sequential --output={{ result_location }}/sequential_w{{ result_extention }} --bs={{ sequential_bs }} --size={{ sequential_size }} --readwrite=write --ramp_time={{ sequential_ramp_time }}"
 
 - name: Sequential read test for throughput
-  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --filename={{ ansible_env.HOME }}/fio/tests/sequential --output={{ ansible_env.HOME }}/fio/results/sequential_r.txt --bs={{ sequential_bs }} --size={{ sequential_size }} --readwrite=read --ramp_time=4"
+  shell: "sync;fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test --output-format={{ output_format }} --filename={{ tests_location }}/sequential --output={{ result_location }}/sequential_r{{ result_extention }} --bs={{ sequential_bs }} --size={{ sequential_size }} --readwrite=read --ramp_time={{ sequential_ramp_time }}"
 
-- name: Delete test files in {{ ansible_env.HOME }}/fio/tests/
+- name: Delete test files in {{ tests_location }}
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/fio/tests/"
+    path: "{{ tests_location }}"
     state: "{{ item }}"
     mode: '0700'
   with_items:
