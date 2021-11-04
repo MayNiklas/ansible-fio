@@ -3,13 +3,13 @@
 
 tests_location: "{{ ansible_env.HOME }}/fio/tests"
 result_location: "{{ ansible_env.HOME }}/fio/results"
-result_extention: ".txt"
+result_extention: ".json"
 
 # Set the reporting format to normal, terse, json, or json+.
 # Multiple formats can be selected, separated by a comma.
 # terse is a CSV based format.
 # json+ is like json, except it adds a full dump of the latency buckets.
-output_format: "normal"
+output_format: "json+"
 
 
 
